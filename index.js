@@ -1,4 +1,5 @@
 const products = require("./routes/products");
+const categories = require("./routes/categories");
 const express = require("express");
 const app = express();
 const { sequelize } = require("./database");
@@ -7,6 +8,7 @@ const startServer = async () => {
   try {
     app.use(express.json());
     app.use("/api/products", products);
+    app.use("/api/categories", categories);
 
     await sequelize.authenticate();
     await sequelize.sync();
