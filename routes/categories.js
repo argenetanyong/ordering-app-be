@@ -47,11 +47,8 @@ router.get("/:id", async (req, res) => {
 //-------------- CREATE -----------------//
 router.post("/", async (req, res) => {
   const result = await Category.create({
-    title: req.body.title,
-    skills: req.body.skills,
-    description: req.body.description,
-    budget: req.body.budget,
-    contact_email: req.body.contact_email,
+    name: req.body.name,
+    img_url: req.body.img_url,
   });
   res.status(200).send(result);
 });
