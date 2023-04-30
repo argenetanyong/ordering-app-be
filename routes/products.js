@@ -47,11 +47,9 @@ router.get("/:id", async (req, res) => {
 //-------------- CREATE -----------------//
 router.post("/", async (req, res) => {
   const result = await Product.create({
-    title: req.body.title,
-    skills: req.body.skills,
-    description: req.body.description,
-    budget: req.body.budget,
-    contact_email: req.body.contact_email,
+    name: req.body.name,
+    price: req.body.price,
+    category_id: req.body.category_id,
   });
   res.status(200).send(result);
 });
