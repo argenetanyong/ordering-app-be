@@ -59,8 +59,36 @@ const Category = sequelize.define(
   }
 );
 
+const User = sequelize.define(
+  "user",
+  {
+    username: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    is_admin: {
+      type: Sequelize.INTEGER,
+    },
+    is_superadmin: {
+      type: Sequelize.INTEGER,
+    },
+    deleted_at: {
+      type: Sequelize.DATE,
+      allowNull: true,
+    },
+  },
+  {
+    underscored: true,
+  }
+);
+
 module.exports = {
   sequelize,
   Product,
   Category,
+  User,
 };
