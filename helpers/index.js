@@ -56,4 +56,4 @@ const decodeToken = (token) => {
   }
 };
 
-module.exports = { setHashPassword, generateToken };
+module.exports = { setHashPassword, generateToken, comparePassword };
