@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const _ = require("lodash");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const { setHashPassword, generateToken } = require("../helpers");
+const { handleSuccess } = require("../helpers/responseHandler");
 const express = require("express");
 const router = express.Router();
 const cors = require("cors");
@@ -51,8 +51,8 @@ router.post("/", async (req, res) => {
   let body = req.body;
 
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(body.password, salt);
+    const hashedPassword = await setHashPassword(body.password);
+    console.log("hashedPassword", hashedPassword);
     body.password = hashedPassword;
     body.is_admin = 1;
 
@@ -70,7 +70,20 @@ router.post("/", async (req, res) => {
 
     const response = await User.findByPk(data.id, criteria);
 
-    res.status(200).send(response);
+    const generatedToken = generateToken({
+      id: data.id,
+      type: "user",
+      expiresIn: "1d",
+      data: response,
+    });
+
+    /*  res.status(200).send(response); */
+
+    handleSuccess(res, {
+      statusCode: 201,
+      message: "SUCCESS",
+      result: { data: response, token: generatedToken.token },
+    });
   } catch (err) {
     console.log("Created user error --> ", err);
   }
