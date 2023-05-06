@@ -1,6 +1,7 @@
 const products = require("./routes/products");
 const categories = require("./routes/categories");
 const users = require("./routes/users");
+const authentications = require("./routes/authentications/users");
 const express = require("express");
 const app = express();
 const { sequelize } = require("./database");
@@ -11,6 +12,7 @@ const startServer = async () => {
     app.use("/api/products", products);
     app.use("/api/categories", categories);
     app.use("/api/users", users);
+    app.use("/api/authentications", authentications);
 
     await sequelize.authenticate();
     await sequelize.sync();
