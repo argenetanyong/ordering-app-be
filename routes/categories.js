@@ -2,11 +2,12 @@ const Joi = require("joi");
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
-const cors = require("cors");
+const { handleSuccess } = require("../helpers/responseHandler");
 const { Category } = require("../database");
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 
+const cors = require("cors");
 router.use(cors());
 
 //-------------- LIST -----------------//
@@ -46,11 +47,23 @@ router.get("/:id", async (req, res) => {
 
 //-------------- CREATE -----------------//
 router.post("/", async (req, res) => {
-  const result = await Category.create({
-    name: req.body.name,
-    img_url: req.body.img_url,
-  });
-  res.status(200).send(result);
+  let body = req.body;
+
+  const { error } = validateCategory(body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  try {
+    const response = await Category.create({
+      name: body.name,
+      img_url: body.img_url,
+    });
+    handleSuccess(res, {
+      statusCode: 201,
+      result: { data: response },
+    });
+  } catch (err) {
+    console.log("Created user error --> ", err);
+  }
 });
 
 //-------------- UPDATE -----------------//
@@ -84,12 +97,12 @@ router.delete("/:id", async (req, res) => {
 });
 
 function validateCategory(Category) {
-  const schema = {
-    text: Joi.string().min(1).required(),
-    completed: Joi.boolean().required(),
-  };
+  const schema = Joi.object({
+    name: Joi.string().required(),
+    img_url: Joi.string().allow(null, ""),
+  });
 
-  return Joi.validate(Category, schema);
+  return schema.validate(Category);
 }
 
 module.exports = router;
