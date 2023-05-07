@@ -2,11 +2,11 @@ const Joi = require("joi");
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
-const cors = require("cors");
+const { handleSuccess } = require("../helpers/responseHandler");
 const { Product } = require("../database");
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
-
+const cors = require("cors");
 router.use(cors());
 
 //-------------- LIST -----------------//
@@ -46,12 +46,25 @@ router.get("/:id", async (req, res) => {
 
 //-------------- CREATE -----------------//
 router.post("/", async (req, res) => {
-  const result = await Product.create({
-    name: req.body.name,
-    price: req.body.price,
-    category_id: req.body.category_id,
-  });
-  res.status(200).send(result);
+  let body = req.body;
+
+  const { error } = validateProduct(body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  try {
+    const response = await Product.create({
+      name: body.name,
+      price: body.price,
+      category_id: body.category_id,
+    });
+
+    handleSuccess(res, {
+      statusCode: 201,
+      result: { data: response },
+    });
+  } catch (err) {
+    console.log("Created user error --> ", err);
+  }
 });
 
 //-------------- UPDATE -----------------//
@@ -85,12 +98,13 @@ router.delete("/:id", async (req, res) => {
 });
 
 function validateProduct(Product) {
-  const schema = {
-    text: Joi.string().min(1).required(),
-    completed: Joi.boolean().required(),
-  };
+  const schema = Joi.object({
+    name: Joi.string().required(),
+    price: Joi.number().required(),
+    category_id: Joi.number().required(),
+  });
 
-  return Joi.validate(Product, schema);
+  return schema.validate(Product);
 }
 
 module.exports = router;

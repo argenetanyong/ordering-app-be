@@ -50,6 +50,9 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   let body = req.body;
 
+  const { error } = validateUser(body);
+  if (error) return res.status(400).send(error.details[0].message);
+
   try {
     const hashedPassword = await setHashPassword(body.password);
     console.log("hashedPassword", hashedPassword);
@@ -120,12 +123,12 @@ router.delete("/:id", async (req, res) => {
 });
 
 function validateUser(User) {
-  const schema = {
-    username: Joi.string().min(1).required(),
-    password: Joi.string().required(),
-  };
+  const schema = Joi.object({
+    username: Joi.string().min(4).required(),
+    password: Joi.string().min(4).required(),
+  });
 
-  return Joi.validate(Product, schema);
+  return schema.validate(User);
 }
 
 module.exports = router;
