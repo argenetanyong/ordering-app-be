@@ -44,6 +44,18 @@ router.get("/:id", async (req, res) => {
   res.status(200).send(result);
 });
 
+//-------------- READ CATEGORY ID -----------------//
+router.get("/read-by-category-id/:id", async (req, res) => {
+  let criteria = {
+    where: {
+      deleted_at: null,
+      category_id: req.params.id,
+    },
+  };
+  const result = await Product.findAll(criteria);
+  res.status(200).send(result);
+});
+
 //-------------- CREATE -----------------//
 router.post("/", async (req, res) => {
   let body = req.body;
