@@ -71,9 +71,16 @@ router.post("/", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(`[${User}] Error on login: `, err);
-    return res.status(400).send("Invalid password");
+    //res.status(400).send("Invalid password");
     /* next(err); */
+    console.error(`[${User}] Error on login: `, err);
+    const MESSAGE_INVALID_LOGIN = "Invalid login";
+    res.status(404).send({
+      status: MESSAGE_INVALID_LOGIN,
+      statusCode: 404,
+      message: MESSAGE_INVALID_LOGIN,
+      err: err,
+    });
   }
 });
 
