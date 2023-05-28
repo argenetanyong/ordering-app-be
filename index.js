@@ -5,6 +5,8 @@ const authentications = require("./routes/authentications/users");
 const express = require("express");
 const app = express();
 const { sequelize } = require("./database");
+const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
 
 const startServer = async () => {
   try {
@@ -13,6 +15,10 @@ const startServer = async () => {
     app.use("/api/categories", categories);
     app.use("/api/users", users);
     app.use("/api/authentications", authentications);
+    app.use(express.static("public"));
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use(fileUpload());
 
     await sequelize.authenticate();
     await sequelize.sync();
