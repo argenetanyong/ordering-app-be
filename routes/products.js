@@ -91,21 +91,22 @@ router.post("/", uploadImage, async (req, res) => {
   let body = req.body;
   let file = req.file;
 
+  let img_url;
+  if (file) {
+    img_url = file.path.replace("public", "");
+  }
+  body.img_url = img_url;
+
   const { error } = validateProduct(body);
 
   if (error) return res.status(400).send(error.details[0].message);
-
-  let fileUrl;
-  if (file) {
-    fileUrl = file.path.replace("public", "");
-  }
 
   try {
     const response = await Product.create({
       name: body.name,
       price: body.price,
       category_id: body.category_id,
-      img_url: fileUrl,
+      img_url: img_url,
     });
 
     handleSuccess(res, {
@@ -157,10 +158,13 @@ router.delete("/:id", async (req, res) => {
 });
 
 function validateProduct(Product) {
+  console.log("Validate -->>", Product);
+
   const schema = Joi.object({
     name: Joi.string().required(),
     price: Joi.number().required(),
     category_id: Joi.number().required(),
+    img_url: Joi.string(),
   });
 
   return schema.validate(Product);
