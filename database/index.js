@@ -86,9 +86,61 @@ const User = sequelize.define(
   }
 );
 
+const Order = sequelize.define(
+  "order",
+  {
+    order_date: {
+      type: Sequelize.DATE,
+    },
+    total_amount: {
+      type: Sequelize.INTEGER,
+    },
+    deleted_at: {
+      type: Sequelize.DATE,
+      allowNull: true,
+    },
+  },
+  {
+    underscored: true,
+  }
+);
+
+const OrderDetail = sequelize.define(
+  "orderDetail",
+  {
+    order_id: {
+      type: Sequelize.INTEGER,
+    },
+    product_id: {
+      type: Sequelize.INTEGER,
+    },
+    product_name: {
+      type: Sequelize.STRING,
+    },
+    product_price: {
+      type: Sequelize.INTEGER,
+    },
+    order_date: {
+      type: Sequelize.DATE,
+    },
+    quantity: {
+      type: Sequelize.INTEGER,
+    },
+    deleted_at: {
+      type: Sequelize.DATE,
+      allowNull: true,
+    },
+  },
+  {
+    underscored: true,
+  }
+);
+
 module.exports = {
   sequelize,
   Product,
   Category,
   User,
+  Order,
+  OrderDetail,
 };

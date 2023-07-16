@@ -1,6 +1,8 @@
 const products = require("./routes/products");
 const categories = require("./routes/categories");
 const users = require("./routes/users");
+const orders = require("./routes/orders");
+const orderDetails = require("./routes/order-details");
 const authentications = require("./routes/authentications/users");
 const express = require("express");
 const app = express();
@@ -14,6 +16,8 @@ const startServer = async () => {
     app.use("/api/products", products);
     app.use("/api/categories", categories);
     app.use("/api/users", users);
+    app.use("/api/orders", orders);
+    app.use("/api/order-details", orderDetails);
     app.use("/api/authentications", authentications);
     app.use(express.static("public"));
     app.use(bodyParser.urlencoded({ extended: true }));
