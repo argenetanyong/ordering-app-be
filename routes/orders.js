@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
     where: {
       deleted_at: null,
     },
+    order: [["createdAt", "DESC"]], // Add this line for descending order
   };
 
   if (search) {
@@ -27,6 +28,7 @@ router.get("/", async (req, res) => {
         deleted_at: null,
         skills: { [Op.like]: "%" + search + "%" },
       },
+      order: [["createdAt", "DESC"]], // Add this line for descending order
     };
   }
 

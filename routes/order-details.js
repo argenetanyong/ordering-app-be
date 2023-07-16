@@ -35,8 +35,28 @@ router.get("/", async (req, res) => {
 });
 
 //-------------- READ -----------------//
+
 router.get("/:id", async (req, res) => {
   const result = await OrderDetail.findByPk(req.params.id);
+
+  if (_.isEmpty(result)) {
+    res.status(404).send("MESSAGE DATA NOT EXIST");
+    return;
+  }
+
+  res.status(200).send(result);
+});
+
+//-------------- READ BY ORDER ID-----------------//
+
+router.get("/find-by-order-id/:id", async (req, res) => {
+  let criteria = {
+    where: {
+      order_id: req.params.id,
+    },
+  };
+
+  const result = await OrderDetail.findAll(criteria);
 
   if (_.isEmpty(result)) {
     res.status(404).send("MESSAGE DATA NOT EXIST");
